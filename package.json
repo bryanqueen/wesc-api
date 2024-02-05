@@ -1,0 +1,21 @@
+{
+  "name": "WESC_Admin_API",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "NODE_ENV=production node server",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "Umeh Somtochukwu",
+  "license": "ISC",
+  "description": "A Backend Server for WESC Admins",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3",
+    "nodemon": "^2.0.15"
+  }
+}
