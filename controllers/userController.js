@@ -1,23 +1,49 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
+//Retry operation function
+async function retryOperation(operation, maxRetries, delay) {
+    for (let retry = 0; retry < maxRetries; retry++) {
+        try {
+            return await operation();
+        } catch (error) {
+            console.error(`Attempt ${retry + 1} failed:`, error);
+            if (retry < maxRetries - 1) {
+                console.log(`Retrying in ${delay} milliseconds...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+    }
+    throw new Error(`Operation failed after ${maxRetries} attempts`);
+}
+
 const userController = {
     signUp: async (req, res) => {
         try {
-            const {username, email, password} = req.body;
+            const {username, email, password, role} = req.body;
 
             const saltRounds = 12;
-            const hashedPassword = bcrypt.hash(password, saltRounds)
-            const user = new User({
-                username,
-                email,
-                password: hashedPassword
-            })
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+            await retryOperation(
+                async () => {
+                    const user = new User({
+                      username,
+                      email,
+                      password: hashedPassword,
+                      role
+                  });
+                  await user.save();
+                },
+                3,
+                1000
+            )
     
-           await user.save();
     
             res.json({message: 'Your account has been successfully created'})
         } catch (error) {
+            console.error(error);
             return res.status(500).json({error: 'An error occured while trying to create your account, please try again'})
         }
     },

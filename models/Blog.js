@@ -7,6 +7,7 @@ const blogSchema = new mongoose.Schema({
         unique: true
     },
     displayImage: {
+        type: String,
         required: true
     },
     body: {

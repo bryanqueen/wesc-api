@@ -5,7 +5,7 @@ const userController = require('../controllers/userController');
 
 //Routes
 router.post('/signup', userController.signUp );
-router.post('/signIn', userController.signIn);
+router.post('/signin', userController.signIn);
 router.get('/:id', userController.viewProfile );
 router.put('/:id', userController.editProfile);
 router.delete('/:id', userController.deleteProfile);

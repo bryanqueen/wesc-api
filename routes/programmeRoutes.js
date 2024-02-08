@@ -5,7 +5,7 @@ const programmeController = require('../controllers/programmeController');
 const authMiddleware = require('../middleware/auth');
 
 //Routes
-router.post('/create', authMiddleware, programmeController.createProgramme);
+router.post('/', authMiddleware, programmeController.createProgramme);
 router.get('/', authMiddleware, programmeController.viewAllProgrammes);
 router.put('/:id', authMiddleware, programmeController.editProgramme);
 router.delete('/:id', authMiddleware, programmeController.deleteProgramme)
