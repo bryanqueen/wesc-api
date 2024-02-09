@@ -1,4 +1,18 @@
-const Blog = require('../models/Blog')
+const Blog = require('../models/Blog');
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'blog_cover',
+      allowed_formats: ['jpg', 'jpeg', 'png'],
+    },
+  });
+
+  const parser = multer({ storage: storage });
 
 const blogController = {
     createBlog: async (req, res) => {

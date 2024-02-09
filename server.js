@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const userRoutes = require('../Wesc-Api/routes/userRoutes');
+const userRoutes = require('../wesc-api/routes/userRoutes');
 const commentRoutes = require('../Wesc-Api/routes/commentRoutes');
 const blogRoutes = require('../Wesc-Api/routes/blogRoutes');
 const programmeRoutes = require('../Wesc-Api/routes/programmeRoutes');
@@ -16,13 +16,6 @@ mongoose.set('strictQuery', false)
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('Mongoose connection has been established'))
 .catch((error) => console.log(error));
-
-//Import all the Models
-// require('./models/Blog');
-// require('/models/Comment');
-// require('/models/JobsBanner');
-// require('./models/Programme');
-// require('./models/User');
 
 
 //Json Parser Middleware
