@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cloudinary = require('cloudinary').v2
 const userRoutes = require('../wesc-api/routes/userRoutes');
 const commentRoutes = require('../Wesc-Api/routes/commentRoutes');
 const blogRoutes = require('../Wesc-Api/routes/blogRoutes');
@@ -16,6 +17,14 @@ mongoose.set('strictQuery', false)
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('Mongoose connection has been established'))
 .catch((error) => console.log(error));
+
+
+//Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 
 //Json Parser Middleware

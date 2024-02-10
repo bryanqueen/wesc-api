@@ -11,13 +11,17 @@ const blogSchema = new mongoose.Schema({
         required: true
     },
     body: {
-        type: String,
+        type: Array,
         required: true,
     },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
     }],
+    author: {
+        type: String,
+        required: true
+    },
     createdAt: {
         type: Date,
         default: Date.now()
