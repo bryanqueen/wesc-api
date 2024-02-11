@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const Admin = require('../models/Admin');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -21,20 +21,20 @@ async function retryOperation(operation, maxRetries, delay) {
 const userController = {
     signUp: async (req, res) => {
         try {
-            const {username, email, password, role} = req.body;
+            const {username, email, password} = req.body;
 
             const saltRounds = 12;
             const hashedPassword = await bcrypt.hash(password, saltRounds);
 
             await retryOperation(
                 async () => {
-                    const user = new User({
+                    const admin = new Admin({
                       username,
                       email,
                       password: hashedPassword,
-                      role
+                      
                   });
-                  await user.save();
+                  await admin.save();
                 },
                 3,
                 1000
@@ -51,13 +51,13 @@ const userController = {
         try {
             const {email, password} = req.body;
 
-            const user = await User.findOne({email});
+            const admin = await Admin.findOne({email});
 
-            if (!user) {
+            if (!admin) {
                 return res.status(422).json({error: 'Invalid email or password, please try again'})
             }
 
-            const passwordMatch= await bcrypt.compare(password, user.password);
+            const passwordMatch= await bcrypt.compare(password, admin.password);
 
             if (!passwordMatch) {
                 return res.status(422).json({error: 'Invalid email or password'})
@@ -65,7 +65,7 @@ const userController = {
 
             const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn: '30m'});
 
-            res.json({message: 'Your account has been successfully created'}, token)
+            res.json({message: 'Sign In Successful'}, token)
         } catch (error) {
             res.status(500).json({error: 'An error occured while trying to sign you in, please try again'})
         }
@@ -74,7 +74,7 @@ const userController = {
         try {
             const userId = req.userId;
 
-            const profile = await User.findById(userId);
+            const profile = await Admin.findById(userId);
 
             if (!profile) {
                 return res.status(404).json({error: 'Not Found'})
@@ -91,7 +91,7 @@ const userController = {
 
             const {username, email, password} = req.body;
 
-            const updateProfile = await User.findByIdAndUpdate(
+            const updateProfile = await Admin.findByIdAndUpdate(
                 userId,
                 {username, email, password},
                 {new: true}
@@ -108,7 +108,7 @@ const userController = {
        try {
         const userId = req.userId;
 
-        const deleteProfile = await User.findByIdAndDelete(userId);
+        const deleteProfile = await Admin.findByIdAndDelete(userId);
 
         if (!deleteProfile) {
             return res.status(404).json({message: 'Not Found'})

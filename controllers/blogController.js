@@ -1,19 +1,34 @@
-const Blog = require('../models/Blog')
+const Blog = require('../models/Blog');
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'blog_cover',
+      format: async (req, res) => 'png'
+    },
+  });
+
+  const displayImageParser = multer({ storage: storage });
 
 const blogController = {
     createBlog: async (req, res) => {
         try {
-            const {title, displayImage, body} =  req.body;
-
+            const {title, body, author} = req.body;
+            const displayImage = req.file.path;
+            const uploadedImage = await cloudinary.uploader.upload(displayImage);
             const newBlog = new Blog({
                 title,
-                displayImage,
-                body
+                body,
+                author,
+                displayImage: uploadedImage.secure_url
             });
 
-            await newBlog.save();
-
-            res.json({message: 'You just created a Blog post'})
+            await newBlog.save()
+            res.json(newBlog)
         } catch (error) {
             return res.status(500).json({error: 'Ooops!! an error occured while trying to post this blog, please try again.'})
         }
@@ -46,8 +61,24 @@ const blogController = {
     editBlog: async (req, res) => {
         try {
             const blogId = req.params.id;
+
+            const {title, body, author} = req.body;
+            let displayImage;
+            if (req.file){
+                const uploadedImage = await cloudinary.uploader.upload(req.file.path);
+                displayImage = uploadedImage.secure_url;
+            }
             
-            const blogToBeEdited = await Blog.findByIdAndUpdate(blogId);
+            const blogToBeEdited = await Blog.findByIdAndUpdate(
+                blogId,
+                {
+                    title,
+                    body,
+                    author,
+                    displayImage
+                },
+                {new: true}
+            );
 
             if(!blogToBeEdited) {
                 return res.status(404).json({error: 'Blog Not Found'})
@@ -71,4 +102,7 @@ const blogController = {
     }
 }
 
-module.exports = blogController;
+module.exports = {
+    blogController,
+    displayImageParser
+}
