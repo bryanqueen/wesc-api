@@ -17,26 +17,22 @@ mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('Mongoose connection has been established'))
 .catch((error) => console.log(error));
 
-//Import all the Models
-// require('./models/Blog');
-// require('/models/Comment');
-// require('/models/JobsBanner');
-// require('./models/Programme');
-// require('./models/User');
+
 
 
 //Json Parser Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
+app.get('/',(req, res) => {
+    res.send('<h1>WESC Backend Api</h1>')
+})
 //Routes Middleware
 app.use(`${path}users`, userRoutes);
 app.use(`${path}blogs`, blogRoutes);
 app.use(`${path}comments`, commentRoutes);
 app.use(`${path}programmes`, programmeRoutes);
 app.use(`${path}jobs`, jobsbannerRoutes)
-app.get('/',(req, res) => {
-    res.send('<h1>WESC Backend Api</h1>')
-})
 
 
 
