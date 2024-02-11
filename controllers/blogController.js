@@ -8,7 +8,7 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
       folder: 'blog_cover',
-      allowed_formats: ['jpg', 'jpeg', 'png'],
+      format: async (req, res) => 'png'
     },
   });
 
@@ -28,7 +28,7 @@ const blogController = {
             });
 
             await newBlog.save()
-            res.json({message: 'You just created a Blog post'})
+            res.json(newBlog)
         } catch (error) {
             return res.status(500).json({error: 'Ooops!! an error occured while trying to post this blog, please try again.'})
         }
