@@ -33,7 +33,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 app.get('/',(req, res) => {
-    res.send('<h1>WESC Backend Api</h1>')
+    res.status(200).json('Welcome to WESC Backend API');
 })
 //Routes Middleware
 app.use(`${path}users`, userRoutes);
