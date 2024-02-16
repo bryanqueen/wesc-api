@@ -13,10 +13,21 @@ const path = '/api/v1/'
 const app = express();
 
 //Establish Mongoose Connection
-mongoose.set('strictQuery', false)
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log('Mongoose connection has been established'))
-.catch((error) => console.log(error));
+        // mongoose.set('strictQuery', false)
+        // mongoose.connect(process.env.MONGO_URI)
+        // .then(() => console.log('Mongoose connection has been established'))
+        // .catch((error) => console.log(error));
+
+
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+}
 
 
 
@@ -47,7 +58,13 @@ app.use(`${path}jobs`, jobsbannerRoutes)
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, ()=>{
-    console.log(`Server is running on localhost:${port}`)
-})
+// app.listen(port, ()=>{
+//     console.log(`Server is running on localhost:${port}`)
+// })
 
+//Connect DB before listening
+connectDB().then(() => {
+    app.listen(port, () => {
+        console.log("listening for requests");
+    })
+})
