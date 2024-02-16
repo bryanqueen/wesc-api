@@ -65,7 +65,7 @@ const blogController = {
             const {title, body, author} = req.body;
             let displayImage;
             if (req.file){
-                const uploadedImage = await cloudinary.uploader.upload(req.file.path);
+                const uploadedImage = await cloudinary.v2.uploader.upload(req.file.path);
                 displayImage = uploadedImage.secure_url;
             }
             
