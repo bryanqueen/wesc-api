@@ -19,7 +19,7 @@ const blogController = {
         try {
             const {title, body, author} = req.body;
             const displayImage = req.file.path;
-            const uploadedImage = await cloudinary.uploader.upload(displayImage);
+            const uploadedImage = await cloudinary.v2.uploader.upload(displayImage);
             const newBlog = new Blog({
                 title,
                 body,

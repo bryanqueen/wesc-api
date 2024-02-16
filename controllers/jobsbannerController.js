@@ -19,7 +19,7 @@ const jobsbannerController = {
     postBanner: async (req, res) => {
         try {
             const jobBannnerImage = req.file.path;
-            const uploadedJobImage = await cloudinary.uploader.upload(jobBannnerImage);
+            const uploadedJobImage = await cloudinary.v2.uploader.upload(jobBannnerImage);
 
             const newJobPosting = new JobsBanner({
                 jobBannerImage: uploadedJobImage.secure_url
