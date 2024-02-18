@@ -11,7 +11,7 @@ const blogSchema = new mongoose.Schema({
         required: true
     },
     body: {
-        type: Array,
+        type: String,
         required: true,
     },
     comments: [{
