@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2
-const userRoutes = require('../Wesc-Api/routes/userRoutes');
-const commentRoutes = require('../Wesc-Api/routes/commentRoutes');
-const blogRoutes = require('../Wesc-Api/routes/blogRoutes');
-const programmeRoutes = require('../Wesc-Api/routes/programmeRoutes');
+const userRoutes = require('../wesc-api/routes/userRoutes');
+const commentRoutes = require('../wesc-api/routes/commentRoutes');
+const blogRoutes = require('../wesc-api/routes/blogRoutes');
+const programmeRoutes = require('../wesc-api/routes/programmeRoutes');
 const jobsbannerRoutes = require('../wesc-api/routes/jobsbannerRoutes')
 require('dotenv').config();
 const path = '/api/v1/'
