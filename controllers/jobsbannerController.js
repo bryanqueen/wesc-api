@@ -1,28 +1,39 @@
 const multer = require('multer');
-const {CloudinaryStorage} = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
 const JobsBanner = require('../models/JobsBanner');
 
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'Jobs_Image',
-        format: async (req, res) => 'png'
+
+
+const storage = multer.diskStorage({
+    destination: './',
+    filename: function(req, res, cb) {
+        cb(null, file.originalname)
     }
+})
 
-});
-
-const jobBannerImageparser = multer({storage: storage});
+const upload = multer({storage: storage, limits: {fileSize: 10 * 1024 * 1024} })
 
 const jobsbannerController = {
     postBanner: async (req, res) => {
+
+        //using multer to handle file uploads
+        upload.fields([
+            {name: 'job-image', maxCount: 1}
+        ])(req, res, async (err) => {
+            if (err) {
+              return res.status(400).json({ error: err.message });
+             }
+           })
+           //Retrieve Files from the request object
+           const image = req.files.image[0];
         try {
-            const jobBannnerImage = req.file.path;
-            const uploadedJobImage = await cloudinary.v2.uploader.upload(jobBannnerImage);
+            const uploadedJobImage = await cloudinary.uploader.upload(image.path, {
+                folder: 'job_banner',
+              })
 
             const newJobPosting = new JobsBanner({
-                jobBannerImage: uploadedJobImage.secure_url
+                image: uploadedJobImage.secure_url
             });
             await newJobPosting.save();
             res.json(newJobPosting)
