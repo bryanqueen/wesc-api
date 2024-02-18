@@ -70,7 +70,4 @@ const jobsbannerController = {
     }
 };
 
-module.exports = {
-    jobsbannerController,
-    jobBannerImageparser
-}
+module.exports = jobsbannerController
