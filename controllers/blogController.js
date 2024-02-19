@@ -11,37 +11,50 @@ const storage = multer.diskStorage({
   });
 
 // Limit is by default set to 1mb but using the limit property we can set it to 10MB
-const upload = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 } });
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 }
+  }).single('image');
+  
 
 const blogController = {
     createBlog: async (req, res) => {
         // Use multer to handle file uploads
-   upload.fields([
-    { name: 'image', maxCount: 1 }
-  ])(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({ error: err.message });
-       }
-     })
- // Retrieve uploaded files from request object
- const image = req.files.image[0];
-        try {
-            const {title, body, author} = req.body;
-            const uploadedImage = await cloudinary.uploader.upload(image.path, {
-                folder: 'blog_image_covers',
-              })
-            const newBlog = new Blog({
-                title,
-                body,
-                author,
-                image: uploadedImage.secure_url
-            });
-
-            await newBlog.save()
-            res.json(newBlog)
-        } catch (error) {
-            return res.status(500).json({error: 'Ooops!! an error occured while trying to post this blog, please try again.'})
+    upload(req, res, async (err) => {
+        if (err) {
+          return res.status(400).json({ error: err.message });
         }
+  
+        try {
+          // Retrieve uploaded file from request object
+          const image = req.file;
+  
+          // Check if image file exists
+          if (!image) {
+            return res.status(400).json({ error: 'Image file is required' });
+          }
+  
+          // Handle other form fields
+          const { title, body, author } = req.body;
+  
+          const uploadedImage = await cloudinary.uploader.upload(image.path, {
+            folder: 'blog_image_covers',
+          });
+  
+          const newBlog = new Blog({
+            title,
+            body,
+            author,
+            image: uploadedImage.secure_url
+          });
+  
+          await newBlog.save();
+          res.json(newBlog);
+        } catch (error) {
+          console.error(error);
+          return res.status(500).json({ error: 'An error occurred while creating the blog' });
+        }
+      });
     },
     viewAllBlogs: async (req, res) => {
         try {
