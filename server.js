@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cloudinary = require('cloudinary').v2
+const cloudinary = require('cloudinary').v2;
+const cors = require('cors');
 const userRoutes = require('./routes/adminRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const blogRoutes = require('./routes/blogRoutes');
@@ -40,8 +41,10 @@ cloudinary.config({
 
 
 //Json Parser Middleware
+app.use(cors)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
 
 app.get('/',(req, res) => {
     res.status(200).json('Welcome to WESC Backend API');
